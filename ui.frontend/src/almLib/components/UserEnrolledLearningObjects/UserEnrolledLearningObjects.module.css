@@ -112,7 +112,7 @@ body {
     flex-direction: column;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     background-color: var(--card-bg);
-    height: 420px; /* Slightly taller for more content */
+    height: 450px; /* Fixed height for all cards */
     position: relative;
     border: 1px solid rgba(0, 0, 0, 0.05);
 }
@@ -146,9 +146,10 @@ body {
 
 /* Enhanced course content */
 .imageBanner {
-    height: 180px;
+    height: 180px; /* Fixed height for all images */
     overflow: hidden;
     position: relative;
+    flex: 0 0 180px; /* Fixed flex basis to prevent stretching */
 }
 
 .imageBanner::after {
@@ -176,8 +177,10 @@ body {
     padding: var(--spacing-lg);
     display: flex;
     flex-direction: column;
-    flex: 1;
+    flex: 1 0 auto; /* Don't allow shrinking, but allow growing */
     position: relative;
+    height: 230px; /* Fixed height for content area */
+    overflow: hidden; /* Hide overflow content */
 }
 
 .courseTitle {
@@ -291,7 +294,6 @@ body {
 .courseTile:nth-child(5n+5) .tag { border-left: 2px solid #f87171; }
 
 .courseDescription {
-    flex: 1;
     font-family: var(--body-font);
     font-size: 15px;
     font-weight: 400;
@@ -302,8 +304,10 @@ body {
     position: relative;
     overflow: hidden;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 3; /* Limit to 3 lines */
     -webkit-box-orient: vertical;
+    max-height: 72px; /* Approximately 3 lines of text */
+    flex-shrink: 0; /* Prevent shrinking */
 }
 
 .courseFooter {
@@ -314,6 +318,7 @@ body {
     margin-top: auto;
     padding-top: var(--spacing-md);
     position: relative;
+    flex: 0 0 auto; /* Don't grow or shrink */
 }
 
 .courseFooter::before {
@@ -540,7 +545,10 @@ body {
     }
     
     .courseTile {
-        height: auto;
-        min-height: 380px;
+        height: 450px; /* Keep consistent height even on mobile */
+    }
+    
+    .courseInfo {
+        height: 230px; /* Keep consistent height even on mobile */
     }
 }
