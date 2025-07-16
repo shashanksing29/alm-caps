@@ -70,6 +70,97 @@ body {
     border-radius: var(--border-radius-lg);
 }
 
+/* Content container with filter panel and courses */
+.contentContainer {
+    display: flex;
+    gap: var(--spacing-xl);
+    margin-top: var(--spacing-lg);
+}
+
+/* Filter panel styles */
+.filterPanel {
+    flex: 0 0 250px;
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-md);
+    align-self: flex-start;
+    position: sticky;
+    top: var(--spacing-xl);
+}
+
+.filterHeading {
+    font-family: var(--heading-font);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0 0 var(--spacing-md) 0;
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.filterList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.filterButton {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    text-align: left;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: transparent;
+    border: none;
+    border-radius: var(--border-radius-md);
+    font-family: var(--body-font);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filterButton:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.activeFilter {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.activeFilter:hover {
+    background-color: var(--primary-hover);
+}
+
+.filterCount {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 var(--spacing-xs);
+    border-radius: 12px;
+    background-color: rgba(0, 0, 0, 0.1);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.activeFilter .filterCount {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Courses container */
+.coursesContainer {
+    flex: 1;
+}
+
 /* Header container with view toggle */
 .headerContainer {
     display: flex;
@@ -124,9 +215,8 @@ body {
 /* Grid view layout */
 .courseGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: var(--spacing-xl);
-    margin-top: var(--spacing-md);
 }
 
 /* List view layout */
@@ -134,7 +224,6 @@ body {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-lg);
-    margin-top: var(--spacing-md);
 }
 
 /* Headings with modern styling */
@@ -715,6 +804,27 @@ body {
     .listItemImage {
         flex: 0 0 150px;
         height: 150px;
+    }
+    
+    .contentContainer {
+        flex-direction: column;
+    }
+    
+    .filterPanel {
+        flex: 0 0 auto;
+        width: 100%;
+        position: static;
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .filterList {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .filterButton {
+        flex: 1 0 auto;
+        min-width: 120px;
     }
 }
 

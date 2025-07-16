@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { useRef } from "react";
 import axios from "axios";
 import styles from "./UserEnrolledLearningObjects.module.css";
 import { getALMConfig } from "../../utils/global";
@@ -6,8 +7,9 @@ import { QueryParams, RestAdapter } from "../../utils/restAdapter";
 import { JsonApiParse } from "../../utils/jsonAPIAdapter";
 import { JsonApiResponse, PrimeLearningObject } from "../../models";
 
-// View mode type definition
+// Type definitions
 type ViewMode = "card" | "list";
+type FilterType = "all" | "enrolled" | "not-enrolled";
 
 // Helper function outside component to avoid recreation
 function getCookieByName(name: string): string | null {
@@ -28,6 +30,7 @@ const UserEnrolledLearningObjects = () => {
   const [error, setError] = useState<string | null>(null);
   const [availableCourses, setAvailableCourses] = useState<Set<string>>(new Set());
   const [viewMode, setViewMode] = useState<ViewMode>("card");
+  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
 
   // No need for checkCourseAvailability function anymore as we're disabling unavailable courses
 
@@ -140,9 +143,20 @@ const UserEnrolledLearningObjects = () => {
     fetchData();
   }, [checkCoursesAvailability]);
 
+  // Filter courses based on the active filter
+  const filteredCourses = useMemo(() => {
+    if (activeFilter === "all") {
+      return learningObjects;
+    } else if (activeFilter === "enrolled") {
+      return learningObjects.filter(course => availableCourses.has(course.id));
+    } else {
+      return learningObjects.filter(course => !availableCourses.has(course.id));
+    }
+  }, [learningObjects, availableCourses, activeFilter]);
+
   // Memoize the course grid to prevent unnecessary re-renders
   const courseGrid = useMemo(() => {
-    return learningObjects.map((course: PrimeLearningObject, index: number) => {
+    return filteredCourses.map((course: PrimeLearningObject, index: number) => {
       if (!course.localizedMetadata || !course.localizedMetadata[0]) return null;
 
       const metadata = course.localizedMetadata[0];
@@ -294,6 +308,15 @@ const UserEnrolledLearningObjects = () => {
     });
   }, [learningObjects, availableCourses, viewMode]);
 
+  // Count courses by enrollment status
+  const enrolledCount = useMemo(() => {
+    return learningObjects.filter(course => availableCourses.has(course.id)).length;
+  }, [learningObjects, availableCourses]);
+
+  const notEnrolledCount = useMemo(() => {
+    return learningObjects.length - enrolledCount;
+  }, [learningObjects, enrolledCount]);
+
   return (
     <div className={styles.container}>
       <div className={styles.headerContainer}>
@@ -342,14 +365,63 @@ const UserEnrolledLearningObjects = () => {
       )}
 
       {!isLoading && !error && (
-        <div>
-          {learningObjects.length > 0 ? (
-            <div className={viewMode === "card" ? styles.courseGrid : styles.courseList}>
-              {courseGrid}
-            </div>
-          ) : (
-            <p className={styles.noCoursesMessage}>No enrolled courses.</p>
-          )}
+        <div className={styles.contentContainer}>
+          {/* Filter Panel */}
+          <div className={styles.filterPanel}>
+            <h3 className={styles.filterHeading}>Filter Courses</h3>
+            <ul className={styles.filterList}>
+              <li>
+                <button 
+                  className={`${styles.filterButton} ${activeFilter === "all" ? styles.activeFilter : ""}`}
+                  onClick={() => {
+                    console.log("Filter clicked: All Courses");
+                    setActiveFilter("all");
+                  }}
+                  type="button"
+                >
+                  All Courses
+                  <span className={styles.filterCount}>{learningObjects.length}</span>
+                </button>
+              </li>
+              <li>
+                <button 
+                  className={`${styles.filterButton} ${activeFilter === "enrolled" ? styles.activeFilter : ""}`}
+                  onClick={() => {
+                    console.log("Filter clicked: Enrolled");
+                    setActiveFilter("enrolled");
+                  }}
+                  type="button"
+                >
+                  Enrolled
+                  <span className={styles.filterCount}>{enrolledCount}</span>
+                </button>
+              </li>
+              <li>
+                <button 
+                  className={`${styles.filterButton} ${activeFilter === "not-enrolled" ? styles.activeFilter : ""}`}
+                  onClick={() => {
+                    console.log("Filter clicked: Not Enrolled");
+                    setActiveFilter("not-enrolled");
+                  }}
+                  type="button"
+                >
+                  Not Enrolled
+                  <span className={styles.filterCount}>{notEnrolledCount}</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          {/* Course Content */}
+          <div className={styles.coursesContainer}>
+            {filteredCourses.length > 0 ? (
+              <div className={viewMode === "card" ? styles.courseGrid : styles.courseList}>
+                {courseGrid}
+              </div>
+            ) : (
+              <p className={styles.noCoursesMessage}>No courses match the selected filter.</p>
+            )}
+          </div>
         </div>
       )}
     </div>
