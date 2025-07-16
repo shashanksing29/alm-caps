@@ -170,7 +170,7 @@ body {
     flex-direction: column;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     background-color: var(--card-bg);
-    height: 450px; /* Fixed height for all cards */
+    min-height: 450px; /* Minimum height instead of fixed height */
     position: relative;
     border: 1px solid rgba(0, 0, 0, 0.05);
 }
@@ -295,8 +295,8 @@ body {
     flex-direction: column;
     flex: 1 0 auto; /* Don't allow shrinking, but allow growing */
     position: relative;
-    height: 230px; /* Fixed height for content area */
-    overflow: hidden; /* Hide overflow content */
+    min-height: 230px; /* Minimum height instead of fixed height */
+    overflow: visible; /* Allow content to be visible */
 }
 
 .courseTitle {
@@ -452,7 +452,7 @@ body {
     font-weight: 400;
     color: var(--muted-text);
     line-height: 1.6;
-    margin: 0;
+    margin: 0 0 var(--spacing-md) 0; /* Add bottom margin */
     word-break: break-word;
     position: relative;
     overflow: hidden;
@@ -724,10 +724,10 @@ body {
     }
     
     .courseTile {
-        height: 450px; /* Keep consistent height even on mobile */
+        min-height: 450px; /* Minimum height instead of fixed height */
     }
     
     .courseInfo {
-        height: 230px; /* Keep consistent height even on mobile */
+        min-height: 230px; /* Minimum height instead of fixed height */
     }
 }
