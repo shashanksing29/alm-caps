@@ -143,19 +143,33 @@ const UserEnrolledLearningObjects = () => {
     fetchData();
   }, [checkCoursesAvailability]);
 
+  // Debug effect to track filter changes
+  useEffect(() => {
+    console.log("Active filter changed to:", activeFilter);
+  }, [activeFilter]);
+
   // Filter courses based on the active filter
   const filteredCourses = useMemo(() => {
+    console.log("Computing filtered courses with filter:", activeFilter);
+    console.log("Total courses:", learningObjects.length);
+    console.log("Available courses:", availableCourses.size);
+    
+    let result;
     if (activeFilter === "all") {
-      return learningObjects;
+      result = learningObjects;
     } else if (activeFilter === "enrolled") {
-      return learningObjects.filter(course => availableCourses.has(course.id));
+      result = learningObjects.filter(course => availableCourses.has(course.id));
     } else {
-      return learningObjects.filter(course => !availableCourses.has(course.id));
+      result = learningObjects.filter(course => !availableCourses.has(course.id));
     }
+    
+    console.log("Filtered courses count:", result.length);
+    return result;
   }, [learningObjects, availableCourses, activeFilter]);
 
   // Memoize the course grid to prevent unnecessary re-renders
   const courseGrid = useMemo(() => {
+    console.log("Rendering course grid with", filteredCourses.length, "courses");
     return filteredCourses.map((course: PrimeLearningObject, index: number) => {
       if (!course.localizedMetadata || !course.localizedMetadata[0]) return null;
 
@@ -415,8 +429,158 @@ const UserEnrolledLearningObjects = () => {
           {/* Course Content */}
           <div className={styles.coursesContainer}>
             {filteredCourses.length > 0 ? (
-              <div className={viewMode === "card" ? styles.courseGrid : styles.courseList}>
-                {courseGrid}
+              <div 
+                className={viewMode === "card" ? styles.courseGrid : styles.courseList}
+                key={`${activeFilter}-${viewMode}-${filteredCourses.length}`} // Force re-render when filter changes
+              >
+                {/* Render courses directly instead of using memoized grid */}
+                {filteredCourses.map((course: PrimeLearningObject, index: number) => {
+                  if (!course.localizedMetadata || !course.localizedMetadata[0]) return null;
+                  
+                  const metadata = course.localizedMetadata[0];
+                  const ratingObj = course.rating;
+                  const averageRating = ratingObj?.averageRating || 0;
+                  const ratingsCount = ratingObj?.ratingsCount || 0;
+                  const tags = course.tags || [];
+                  const instanceId = course.instances && course.instances[0] ? course.instances[0].id : "";
+                  const courseUrl = `http://localhost:4503/content/learning/language-masters/en/overview.html/trainingId/${course.id}/trainingInstanceId/${instanceId}/home.html`;
+                  const fallbackImage = "https://fastly.picsum.photos/id/60/1920/1200.jpg?hmac=fAMNjl4E_sG_WNUjdU39Kald5QAHQMh-_-TsIbbeDNI";
+                  
+                  // Card view rendering
+                  if (viewMode === "card") {
+                    return (
+                      <div key={`card-${course.id}-${index}`} className={styles.courseTile}>
+                        <div className={styles.imageBanner}>
+                          <img
+                            src={course.imageUrl || fallbackImage}
+                            alt={metadata.name || "Course image"}
+                            className={styles.courseImage}
+                            onError={(e) => {
+                              e.currentTarget.src = fallbackImage;
+                            }}
+                          />
+                        </div>
+                        <div className={styles.courseInfo}>
+                          <h3 className={styles.courseTitle}>{metadata.name || "Untitled Course"}</h3>
+                          <div className={styles.courseTags}>
+                            <div className={styles.courseRating}>
+                              <span className={styles.ratingLabel}>Course Rating: </span>
+                              <div className={styles.stars}>
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                  <span 
+                                    key={star} 
+                                    className={`${styles.star} ${star <= averageRating ? styles.starFilled : styles.starEmpty}`}
+                                  >
+                                    {star <= averageRating ? '★' : '☆'}
+                                  </span>
+                                ))}
+                              </div>    
+                              <span className={styles.ratingsCount}>({ratingsCount})</span>
+                            </div>
+                            {tags && tags.length > 0 && (
+                              <div className={styles.tagsList}>
+                                {tags.map((tag, tagIndex) => (
+                                  <span key={tagIndex} className={styles.tag}>{tag}</span>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                          <div className={styles.courseFooter}>
+                            <p className={styles.courseDescription}>
+                              {metadata.description ?
+                                (metadata.description.length > 100 ?
+                                  `${metadata.description.substring(0, 100)}...` :
+                                  metadata.description) :
+                                "No description available"}
+                            </p>
+                            {availableCourses.has(course.id) ? (
+                              <a
+                                href={courseUrl}
+                                className={styles.availableButton}
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                              >
+                                View Course
+                              </a>
+                            ) : (
+                              <span className={styles.disabledButton}>
+                                Not Enrolled
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  } 
+                  // List view rendering
+                  else {
+                    return (
+                      <div key={`list-${course.id}-${index}`} className={styles.courseListItem}>
+                        <div className={styles.listItemImage}>
+                          <img
+                            src={course.imageUrl || fallbackImage}
+                            alt={metadata.name || "Course image"}
+                            className={styles.courseImage}
+                            onError={(e) => {
+                              e.currentTarget.src = fallbackImage;
+                            }}
+                          />
+                        </div>
+                        <div className={styles.listItemContent}>
+                          <div className={styles.listItemHeader}>
+                            <h3 className={styles.courseTitle}>{metadata.name || "Untitled Course"}</h3>
+                            <div className={styles.courseRating}>
+                              <div className={styles.stars}>
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                  <span 
+                                    key={star} 
+                                    className={`${styles.star} ${star <= averageRating ? styles.starFilled : styles.starEmpty}`}
+                                  >
+                                    {star <= averageRating ? '★' : '☆'}
+                                  </span>
+                                ))}
+                              </div>    
+                              <span className={styles.ratingsCount}>({ratingsCount})</span>
+                            </div>
+                          </div>
+                          
+                          {tags && tags.length > 0 && (
+                            <div className={styles.tagsList}>
+                              {tags.map((tag, tagIndex) => (
+                                <span key={tagIndex} className={styles.tag}>{tag}</span>
+                              ))}
+                            </div>
+                          )}
+                          
+                          <p className={styles.courseDescription}>
+                            {metadata.description ?
+                              (metadata.description.length > 150 ?
+                                `${metadata.description.substring(0, 150)}...` :
+                                metadata.description) :
+                              "No description available"}
+                          </p>
+                          
+                          <div className={styles.listItemFooter}>
+                            {availableCourses.has(course.id) ? (
+                              <a
+                                href={courseUrl}
+                                className={styles.availableButton}
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                              >
+                                View Course
+                              </a>
+                            ) : (
+                              <span className={styles.disabledButton}>
+                                Not Enrolled
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+                })}
               </div>
             ) : (
               <p className={styles.noCoursesMessage}>No courses match the selected filter.</p>
