@@ -5,8 +5,6 @@ import { getALMConfig } from "../../utils/global";
 import { QueryParams, RestAdapter } from "../../utils/restAdapter";
 import { JsonApiParse } from "../../utils/jsonAPIAdapter";
 import { JsonApiResponse, PrimeLearningObject } from "../../models";
-import { AlertType } from "../../common/Alert/AlertDialog";
-import { useAlert } from "../../common/Alert/useAlert";
 
 // Helper function outside component to avoid recreation
 function getCookieByName(name: string): string | null {
@@ -25,24 +23,9 @@ const UserEnrolledLearningObjects = () => {
   const [learningObjects, setLearningObjects] = useState<PrimeLearningObject[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [apiCallInProgress, setApiCallInProgress] = useState<boolean>(false);
   const [availableCourses, setAvailableCourses] = useState<Set<string>>(new Set());
-  const [almAlert] = useAlert();
 
-  // Function to handle course button click
-  const checkCourseAvailability = useCallback((courseId: string, event: React.MouseEvent) => {
-    // If the course is already known to be available, just allow redirect to courseUrl without popup
-    if (availableCourses.has(courseId)) {
-      // Don't do anything - allow the default link navigation to happen
-      return;
-    }
-    
-    // Prevent the default link behavior for courses not yet verified
-    event.preventDefault();
-    
-    // Just show the popup without making an API call
-    almAlert(true, "CHECKING COURSE AVAILABILITY...", AlertType.success, true);
-  }, [almAlert, availableCourses]);
+  // No need for checkCourseAvailability function anymore as we're disabling unavailable courses
 
   // Helper function to check availability of courses in batch
   const checkCoursesAvailability = useCallback(async (courseIds: string[]) => {
@@ -214,28 +197,33 @@ const UserEnrolledLearningObjects = () => {
                     metadata.description) :
                   "No description available"}
               </p>
-              <a
-                href={courseUrl}
-                className={availableCourses.has(course.id) ? styles.availableButton : styles.viewButton}
-                target="_blank" 
-                rel="noopener noreferrer"
-                onClick={(e) => checkCourseAvailability(course.id, e)}
-              >
-                {availableCourses.has(course.id) ? 'Go to Available Course' : 'Check Availability'}
-              </a>
+              {availableCourses.has(course.id) ? (
+                <a
+                  href={courseUrl}
+                  className={styles.availableButton}
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  Go to Course
+                </a>
+              ) : (
+                <span className={styles.disabledButton}>
+                  Course Not Enrolled
+                </span>
+              )}
             </div>
           </div>
         </div>
       );
     });
-  }, [learningObjects, availableCourses, checkCourseAvailability]);
+  }, [learningObjects, availableCourses]);
 
   return (
     <div className={styles.container}>
       <h2 className={styles.sectionHeading}>Your Learings</h2>
 
       {isLoading && (
-        <p className={styles.loadingMessage}>Loading your learning objects...</p>
+        <p className={styles.loadingMessage}>Loading your Courses...</p>
       )}
 
       {error && (
