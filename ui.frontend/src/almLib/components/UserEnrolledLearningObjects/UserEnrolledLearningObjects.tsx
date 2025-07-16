@@ -6,6 +6,9 @@ import { QueryParams, RestAdapter } from "../../utils/restAdapter";
 import { JsonApiParse } from "../../utils/jsonAPIAdapter";
 import { JsonApiResponse, PrimeLearningObject } from "../../models";
 
+// View mode type definition
+type ViewMode = "card" | "list";
+
 // Helper function outside component to avoid recreation
 function getCookieByName(name: string): string | null {
   const cookies = document.cookie.split(";");
@@ -24,6 +27,7 @@ const UserEnrolledLearningObjects = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [availableCourses, setAvailableCourses] = useState<Set<string>>(new Set());
+  const [viewMode, setViewMode] = useState<ViewMode>("card");
 
   // No need for checkCourseAvailability function anymore as we're disabling unavailable courses
 
@@ -150,36 +154,107 @@ const UserEnrolledLearningObjects = () => {
       const courseUrl = `http://localhost:4503/content/learning/language-masters/en/overview.html/trainingId/${course.id}/trainingInstanceId/${instanceId}/home.html`;
 
       const fallbackImage = "https://fastly.picsum.photos/id/60/1920/1200.jpg?hmac=fAMNjl4E_sG_WNUjdU39Kald5QAHQMh-_-TsIbbeDNI";
-      return (
-        <div key={index} className={styles.courseTile}>
-          <div className={styles.imageBanner}>
-            <img
-              src={course.imageUrl || fallbackImage}
-              alt={metadata.name || "Course image"}
-              className={styles.courseImage}
-              onError={(e) => {
-                e.currentTarget.src = fallbackImage;
-              }}
-            />
-          </div>
-          <div className={styles.courseInfo}>
-            <h3 className={styles.courseTitle}>{metadata.name || "Untitled Course"}</h3>
+      
+      // Card view rendering
+      if (viewMode === "card") {
+        return (
+          <div key={index} className={styles.courseTile}>
+            <div className={styles.imageBanner}>
+              <img
+                src={course.imageUrl || fallbackImage}
+                alt={metadata.name || "Course image"}
+                className={styles.courseImage}
+                onError={(e) => {
+                  e.currentTarget.src = fallbackImage;
+                }}
+              />
+            </div>
+            <div className={styles.courseInfo}>
+              <h3 className={styles.courseTitle}>{metadata.name || "Untitled Course"}</h3>
 
-            <div className={styles.courseTags}>
-              <div className={styles.courseRating}>
-                <span className={styles.ratingLabel}>Course Rating: </span>
-                <div className={styles.stars}>
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <span 
-                      key={star} 
-                      className={`${styles.star} ${star <= averageRating ? styles.starFilled : styles.starEmpty}`}
-                    >
-                      {star <= averageRating ? '★' : '☆'}
-                    </span>
-                  ))}
-                </div>    
-                  <span className={styles.ratingsCount}>({ratingsCount})</span>
+              <div className={styles.courseTags}>
+                <div className={styles.courseRating}>
+                  <span className={styles.ratingLabel}>Course Rating: </span>
+                  <div className={styles.stars}>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <span 
+                        key={star} 
+                        className={`${styles.star} ${star <= averageRating ? styles.starFilled : styles.starEmpty}`}
+                      >
+                        {star <= averageRating ? '★' : '☆'}
+                      </span>
+                    ))}
+                  </div>    
+                    <span className={styles.ratingsCount}>({ratingsCount})</span>
+                </div>
+                {tags && tags.length > 0 && (
+                  <div className={styles.tagsList}>
+                    {tags.map((tag, tagIndex) => (
+                      <span key={tagIndex} className={styles.tag}>{tag}</span>
+                    ))}
+                  </div>
+                )}
               </div>
+
+              <div className={styles.courseFooter}>
+                <p className={styles.courseDescription}>
+                  {metadata.description ?
+                    (metadata.description.length > 100 ?
+                      `${metadata.description.substring(0, 100)}...` :
+                      metadata.description) :
+                    "No description available"}
+                </p>
+                {availableCourses.has(course.id) ? (
+                  <a
+                    href={courseUrl}
+                    className={styles.availableButton}
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    View Course
+                  </a>
+                ) : (
+                  <span className={styles.disabledButton}>
+                    Not Enrolled
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      } 
+      // List view rendering
+      else {
+        return (
+          <div key={index} className={styles.courseListItem}>
+            <div className={styles.listItemImage}>
+              <img
+                src={course.imageUrl || fallbackImage}
+                alt={metadata.name || "Course image"}
+                className={styles.courseImage}
+                onError={(e) => {
+                  e.currentTarget.src = fallbackImage;
+                }}
+              />
+            </div>
+            <div className={styles.listItemContent}>
+              <div className={styles.listItemHeader}>
+                <h3 className={styles.courseTitle}>{metadata.name || "Untitled Course"}</h3>
+                <div className={styles.courseRating}>
+                  <div className={styles.stars}>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <span 
+                        key={star} 
+                        className={`${styles.star} ${star <= averageRating ? styles.starFilled : styles.starEmpty}`}
+                      >
+                        {star <= averageRating ? '★' : '☆'}
+                      </span>
+                    ))}
+                  </div>    
+                  <span className={styles.ratingsCount}>({ratingsCount})</span>
+                </div>
+              </div>
+              
               {tags && tags.length > 0 && (
                 <div className={styles.tagsList}>
                   {tags.map((tag, tagIndex) => (
@@ -187,40 +262,76 @@ const UserEnrolledLearningObjects = () => {
                   ))}
                 </div>
               )}
-            </div>
-
-            <div className={styles.courseFooter}>
+              
               <p className={styles.courseDescription}>
                 {metadata.description ?
-                  (metadata.description.length > 100 ?
-                    `${metadata.description.substring(0, 100)}...` :
+                  (metadata.description.length > 150 ?
+                    `${metadata.description.substring(0, 150)}...` :
                     metadata.description) :
                   "No description available"}
               </p>
-              {availableCourses.has(course.id) ? (
-                <a
-                  href={courseUrl}
-                  className={styles.availableButton}
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                >
-                  View Course
-                </a>
-              ) : (
-                <span className={styles.disabledButton}>
-                  Not Enrolled
-                </span>
-              )}
+              
+              <div className={styles.listItemFooter}>
+                {availableCourses.has(course.id) ? (
+                  <a
+                    href={courseUrl}
+                    className={styles.availableButton}
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    View Course
+                  </a>
+                ) : (
+                  <span className={styles.disabledButton}>
+                    Not Enrolled
+                  </span>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      );
+        );
+      }
     });
-  }, [learningObjects, availableCourses]);
+  }, [learningObjects, availableCourses, viewMode]);
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.sectionHeading}>Your Learings Dashboard</h2>
+      <div className={styles.headerContainer}>
+        <h2 className={styles.sectionHeading}>Your Learning Dashboard</h2>
+        
+        {!isLoading && !error && learningObjects.length > 0 && (
+          <div className={styles.viewToggleContainer}>
+            <button 
+              className={`${styles.viewToggleButton} ${viewMode === "card" ? styles.activeView : ""}`}
+              onClick={() => setViewMode("card")}
+              aria-label="Card View"
+              title="Card View"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+              </svg>
+            </button>
+            <button 
+              className={`${styles.viewToggleButton} ${viewMode === "list" ? styles.activeView : ""}`}
+              onClick={() => setViewMode("list")}
+              aria-label="List View"
+              title="List View"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="8" y1="6" x2="21" y2="6"></line>
+                <line x1="8" y1="12" x2="21" y2="12"></line>
+                <line x1="8" y1="18" x2="21" y2="18"></line>
+                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+        )}
+      </div>
 
       {isLoading && (
         <p className={styles.loadingMessage}>Loading your courses...</p>
@@ -233,7 +344,7 @@ const UserEnrolledLearningObjects = () => {
       {!isLoading && !error && (
         <div>
           {learningObjects.length > 0 ? (
-            <div className={styles.courseGrid}>
+            <div className={viewMode === "card" ? styles.courseGrid : styles.courseList}>
               {courseGrid}
             </div>
           ) : (

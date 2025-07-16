@@ -70,11 +70,71 @@ body {
     border-radius: var(--border-radius-lg);
 }
 
+/* Header container with view toggle */
+.headerContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xl);
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+}
+
+/* View toggle container */
+.viewToggleContainer {
+    display: flex;
+    gap: var(--spacing-xs);
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 4px;
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.viewToggleButton {
+    background: transparent;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted-text);
+    transition: all 0.2s ease;
+}
+
+.viewToggleButton:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: var(--text-color);
+}
+
+.activeView {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.activeView:hover {
+    background-color: var(--primary-hover);
+    color: white;
+}
+
+/* Grid view layout */
 .courseGrid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: var(--spacing-xl);
-    margin-top: var(--spacing-xl);
+    margin-top: var(--spacing-md);
+}
+
+/* List view layout */
+.courseList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-md);
 }
 
 /* Headings with modern styling */
@@ -83,20 +143,18 @@ body {
     font-size: 36px;
     font-weight: 800;
     color: var(--text-color);
-    margin-bottom: var(--spacing-xl);
     letter-spacing: -0.03em;
     line-height: 1.2;
     position: relative;
     padding-bottom: var(--spacing-md);
-    text-align: center;
+    margin: 0;
 }
 
 .sectionHeading::after {
     content: '';
     position: absolute;
     bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 0;
     width: 80px;
     height: 4px;
     background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
@@ -115,6 +173,60 @@ body {
     height: 450px; /* Fixed height for all cards */
     position: relative;
     border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* List view item styling */
+.courseListItem {
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    transition: all 0.3s ease;
+    background-color: var(--card-bg);
+    position: relative;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    height: 200px; /* Fixed height for list items */
+}
+
+.courseListItem:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+}
+
+/* List item accent colors */
+.courseListItem:nth-child(5n+1) { border-left: 4px solid #60a5fa; }
+.courseListItem:nth-child(5n+2) { border-left: 4px solid #c084fc; }
+.courseListItem:nth-child(5n+3) { border-left: 4px solid #34d399; }
+.courseListItem:nth-child(5n+4) { border-left: 4px solid #fbbf24; }
+.courseListItem:nth-child(5n+5) { border-left: 4px solid #f87171; }
+
+.listItemImage {
+    flex: 0 0 200px;
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+}
+
+.listItemContent {
+    flex: 1;
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.listItemHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-sm);
+}
+
+.listItemFooter {
+    margin-top: auto;
+    display: flex;
+    justify-content: flex-end;
 }
 
 /* Modern accent colors with gradients for course tiles */
@@ -173,6 +285,10 @@ body {
     transform: scale(1.05);
 }
 
+.courseListItem:hover .courseImage {
+    transform: scale(1.05);
+}
+
 .courseInfo {
     padding: var(--spacing-lg);
     display: flex;
@@ -207,11 +323,30 @@ body {
     border-radius: var(--border-radius-sm);
 }
 
+/* List view title styling */
+.courseListItem .courseTitle {
+    margin: 0;
+    padding-bottom: 0;
+}
+
+.courseListItem .courseTitle::after {
+    display: none;
+}
+
 .courseTags {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-sm);
     margin-bottom: var(--spacing-md);
+}
+
+/* List view tags styling */
+.courseListItem .courseTags {
+    margin-bottom: var(--spacing-sm);
+}
+
+.courseListItem .tagsList {
+    margin-top: var(--spacing-xs);
 }
 
 /* Enhanced rating display */
@@ -229,9 +364,20 @@ body {
     width: fit-content;
 }
 
+/* List view rating styling */
+.courseListItem .courseRating {
+    background-color: transparent;
+    padding: 0;
+    margin-bottom: 0;
+}
+
 .ratingLabel {
     margin-right: 6px;
     font-weight: 600;
+}
+
+.courseListItem .ratingLabel {
+    display: none;
 }
 
 .stars {
@@ -293,6 +439,13 @@ body {
 .courseTile:nth-child(5n+4) .tag { border-left: 2px solid #fbbf24; }
 .courseTile:nth-child(5n+5) .tag { border-left: 2px solid #f87171; }
 
+/* List view tag colors */
+.courseListItem:nth-child(5n+1) .tag { border-left: 2px solid #60a5fa; }
+.courseListItem:nth-child(5n+2) .tag { border-left: 2px solid #c084fc; }
+.courseListItem:nth-child(5n+3) .tag { border-left: 2px solid #34d399; }
+.courseListItem:nth-child(5n+4) .tag { border-left: 2px solid #fbbf24; }
+.courseListItem:nth-child(5n+5) .tag { border-left: 2px solid #f87171; }
+
 .courseDescription {
     font-family: var(--body-font);
     font-size: 15px;
@@ -308,6 +461,13 @@ body {
     -webkit-box-orient: vertical;
     max-height: 72px; /* Approximately 3 lines of text */
     flex-shrink: 0; /* Prevent shrinking */
+}
+
+/* List view description styling */
+.courseListItem .courseDescription {
+    margin-top: var(--spacing-sm);
+    -webkit-line-clamp: 2;
+    max-height: 48px;
 }
 
 .courseFooter {
@@ -536,6 +696,25 @@ body {
     
     .container {
         padding: var(--spacing-md);
+    }
+    
+    .headerContainer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .viewToggleContainer {
+        align-self: flex-end;
+    }
+    
+    .courseListItem {
+        flex-direction: column;
+        height: auto;
+    }
+    
+    .listItemImage {
+        flex: 0 0 150px;
+        height: 150px;
     }
 }
 
