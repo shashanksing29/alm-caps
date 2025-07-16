@@ -167,7 +167,7 @@ const UserEnrolledLearningObjects = () => {
 
             <div className={styles.courseTags}>
               <div className={styles.courseRating}>
-                <span className={styles.ratingLabel}>Rating: </span>
+                <span className={styles.ratingLabel}>Course Rating: </span>
                 <div className={styles.stars}>
                   {[1, 2, 3, 4, 5].map((star) => (
                     <span 
@@ -204,11 +204,11 @@ const UserEnrolledLearningObjects = () => {
                   target="_blank" 
                   rel="noopener noreferrer"
                 >
-                  Go to Course
+                  View Course
                 </a>
               ) : (
                 <span className={styles.disabledButton}>
-                  Course Not Enrolled
+                  Not Enrolled
                 </span>
               )}
             </div>
@@ -220,10 +220,10 @@ const UserEnrolledLearningObjects = () => {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.sectionHeading}>Your Learings</h2>
+      <h2 className={styles.sectionHeading}>Your Learings Dashboard</h2>
 
       {isLoading && (
-        <p className={styles.loadingMessage}>Loading your Courses...</p>
+        <p className={styles.loadingMessage}>Loading your courses...</p>
       )}
 
       {error && (
@@ -237,7 +237,7 @@ const UserEnrolledLearningObjects = () => {
               {courseGrid}
             </div>
           ) : (
-            <p className={styles.noCoursesMessage}>No enrolled courses found.</p>
+            <p className={styles.noCoursesMessage}>No enrolled courses.</p>
           )}
         </div>
       )}

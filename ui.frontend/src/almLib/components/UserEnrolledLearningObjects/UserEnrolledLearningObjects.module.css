@@ -1,38 +1,52 @@
-/* Only import the font weights we actually use */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&family=Poppins:wght@600;700&family=Nunito:wght@600&display=swap');
+/* Updated font imports with more variety and weights */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@600;700;800&family=DM+Sans:wght@500;700&display=swap');
 
 :root {
-    /* Color variables */
-    --primary-color: #6200ea;
-    --primary-hover: #3700b3;
-    --background-color: #f9f9f9;
-    --text-color: #212121;
-    --muted-text: #616161;
-    --white: #ffffff;
-    --error-color: #d32f2f;
+    /* Modern color palette */
+    --primary-color: #2563eb;       /* Royal Blue */
+    --primary-hover: #1d4ed8;       /* Darker Blue */
+    --secondary-color: #8b5cf6;     /* Purple */
+    --background-color: #f8fafc;    /* Light Gray Blue */
+    --card-bg: #ffffff;             /* White */
+    --text-color: #1e293b;          /* Dark Blue Gray */
+    --muted-text: #64748b;          /* Medium Blue Gray */
+    --error-color: #ef4444;         /* Red */
     
-    /* Accent colors */
-    --accent-color-1: #e3f2fd;  /* Light Blue */
-    --accent-color-2: #fce4ec;  /* Pink */
-    --accent-color-3: #f3e5f5;  /* Lavender */
-    --accent-color-4: #e8f5e9;  /* Green */
-    --accent-color-5: #fff3e0;  /* Orange */
+    /* Gradient colors */
+    --gradient-start: #2563eb;      /* Royal Blue */
+    --gradient-end: #8b5cf6;        /* Purple */
     
-    /* Font families */
-    --heading-font: 'Poppins', sans-serif;
-    --body-font: 'Roboto', sans-serif;
-    --accent-font: 'Nunito', sans-serif;
+    /* Accent colors - vibrant and modern */
+    --accent-color-1: #dbeafe;      /* Light Blue */
+    --accent-color-2: #fae8ff;      /* Light Purple */
+    --accent-color-3: #ecfdf5;      /* Light Green */
+    --accent-color-4: #fef3c7;      /* Light Yellow */
+    --accent-color-5: #ffe4e6;      /* Light Pink */
+    
+    /* Font families - modern choices */
+    --heading-font: 'Montserrat', sans-serif;
+    --body-font: 'Inter', sans-serif;
+    --accent-font: 'DM Sans', sans-serif;
     
     /* Spacing */
+    --spacing-xs: 4px;
     --spacing-sm: 8px;
     --spacing-md: 16px;
     --spacing-lg: 24px;
     --spacing-xl: 32px;
+    --spacing-xxl: 48px;
     
     /* Border radius */
-    --border-radius-sm: 4px;
-    --border-radius-md: 8px;
-    --border-radius-lg: 12px;
+    --border-radius-sm: 6px;
+    --border-radius-md: 12px;
+    --border-radius-lg: 16px;
+    --border-radius-xl: 24px;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 /* Base styles */
@@ -44,98 +58,150 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-weight: 400;
+    color: var(--text-color);
 }
 
 /* Layout components */
 .container {
-    padding: var(--spacing-lg);
-    max-width: 1200px;
+    padding: var(--spacing-xl);
+    max-width: 1280px;
     margin: 0 auto;
+    background: linear-gradient(180deg, rgba(219, 234, 254, 0.3) 0%, rgba(248, 250, 252, 0) 100%);
+    border-radius: var(--border-radius-lg);
 }
 
 .courseGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: var(--spacing-lg);
-    margin-top: var(--spacing-lg);
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--spacing-xl);
+    margin-top: var(--spacing-xl);
 }
 
-/* Headings */
+/* Headings with modern styling */
 .sectionHeading {
     font-family: var(--heading-font);
-    font-size: 32px;
-    font-weight: 700;
+    font-size: 36px;
+    font-weight: 800;
     color: var(--text-color);
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
     letter-spacing: -0.03em;
     line-height: 1.2;
     position: relative;
-    padding-bottom: var(--spacing-sm);
+    padding-bottom: var(--spacing-md);
+    text-align: center;
 }
 
 .sectionHeading::after {
     content: '';
     position: absolute;
     bottom: 0;
-    left: 0;
-    width: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
     height: 4px;
-    background-color: var(--primary-color);
+    background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
     border-radius: var(--border-radius-sm);
 }
 
-/* Course tiles */
+/* Enhanced course tiles */
 .courseTile {
     border-radius: var(--border-radius-lg);
     overflow: hidden;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
     display: flex;
     flex-direction: column;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background-color: var(--white);
-    height: 400px; /* Fixed height for consistency */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background-color: var(--card-bg);
+    height: 420px; /* Slightly taller for more content */
+    position: relative;
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-/* Accent colors for course tiles */
-.courseTile:nth-child(5n+1) { background-color: var(--accent-color-1); }
-.courseTile:nth-child(5n+2) { background-color: var(--accent-color-2); }
-.courseTile:nth-child(5n+3) { background-color: var(--accent-color-3); }
-.courseTile:nth-child(5n+4) { background-color: var(--accent-color-4); }
-.courseTile:nth-child(5n+5) { background-color: var(--accent-color-5); }
+/* Modern accent colors with gradients for course tiles */
+.courseTile:nth-child(5n+1) { 
+    background: linear-gradient(135deg, var(--card-bg) 0%, var(--accent-color-1) 100%);
+    border-top: 4px solid #60a5fa;
+}
+.courseTile:nth-child(5n+2) { 
+    background: linear-gradient(135deg, var(--card-bg) 0%, var(--accent-color-2) 100%);
+    border-top: 4px solid #c084fc;
+}
+.courseTile:nth-child(5n+3) { 
+    background: linear-gradient(135deg, var(--card-bg) 0%, var(--accent-color-3) 100%);
+    border-top: 4px solid #34d399;
+}
+.courseTile:nth-child(5n+4) { 
+    background: linear-gradient(135deg, var(--card-bg) 0%, var(--accent-color-4) 100%);
+    border-top: 4px solid #fbbf24;
+}
+.courseTile:nth-child(5n+5) { 
+    background: linear-gradient(135deg, var(--card-bg) 0%, var(--accent-color-5) 100%);
+    border-top: 4px solid #f87171;
+}
 
 .courseTile:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: var(--shadow-hover);
 }
 
-/* Course content */
+/* Enhanced course content */
 .imageBanner {
     height: 180px;
     overflow: hidden;
+    position: relative;
+}
+
+.imageBanner::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent);
 }
 
 .courseImage {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.8s ease;
+}
+
+.courseTile:hover .courseImage {
+    transform: scale(1.05);
 }
 
 .courseInfo {
-    padding: var(--spacing-md);
+    padding: var(--spacing-lg);
     display: flex;
     flex-direction: column;
-    flex: 1; /* Take up remaining space */
-    position: relative; /* For absolute positioning of footer if needed */
+    flex: 1;
+    position: relative;
 }
 
 .courseTitle {
-    margin: 0 0 12px 0;
+    margin: 0 0 var(--spacing-md) 0;
     font-family: var(--heading-font);
-    font-size: 22px;
-    font-weight: 600;
+    font-size: 20px;
+    font-weight: 700;
     color: var(--text-color);
     letter-spacing: -0.02em;
     line-height: 1.3;
+    position: relative;
+    padding-bottom: var(--spacing-xs);
+}
+
+.courseTitle::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background-color: currentColor;
+    opacity: 0.3;
+    border-radius: var(--border-radius-sm);
 }
 
 .courseTags {
@@ -145,18 +211,24 @@ body {
     margin-bottom: var(--spacing-md);
 }
 
+/* Enhanced rating display */
 .courseRating {
     display: flex;
     align-items: center;
     font-family: var(--body-font);
     font-size: 14px;
     color: var(--text-color);
-    font-weight: 400;
-    margin-bottom: 8px;
+    font-weight: 500;
+    margin-bottom: var(--spacing-sm);
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-md);
+    width: fit-content;
 }
 
 .ratingLabel {
     margin-right: 6px;
+    font-weight: 600;
 }
 
 .stars {
@@ -167,23 +239,25 @@ body {
 .star {
     font-size: 16px;
     margin-right: 2px;
-    cursor: default;
 }
 
 .starFilled {
-    color: #FFD700; /* Gold color for filled stars */
+    color: #fbbf24; /* Amber color for filled stars */
+    filter: drop-shadow(0 0 1px rgba(251, 191, 36, 0.5));
 }
 
 .starEmpty {
-    color: #C0C0C0; /* Silver/gray color for empty stars */
+    color: #d1d5db; /* Light gray for empty stars */
 }
 
 .ratingsCount {
     font-size: 12px;
     color: var(--muted-text);
     margin-left: 6px;
+    opacity: 0.8;
 }
 
+/* Enhanced tags */
 .tagsList {
     display: flex;
     flex-wrap: wrap;
@@ -191,26 +265,45 @@ body {
 }
 
 .tag {
-    background-color: #f0f0f0;
-    color: var(--muted-text);
-    padding: 4px 8px;
-    border-radius: var(--border-radius-sm);
+    background-color: rgba(255, 255, 255, 0.7);
+    color: var(--text-color);
+    padding: 4px 10px;
+    border-radius: var(--border-radius-md);
     font-size: 12px;
-    font-family: var(--body-font);
-    font-weight: 400;
+    font-family: var(--accent-font);
+    font-weight: 500;
     display: inline-block;
-    border: 1px solid #e0e0e0;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
 }
+
+.tag:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Course tiles nth-child tag colors */
+.courseTile:nth-child(5n+1) .tag { border-left: 2px solid #60a5fa; }
+.courseTile:nth-child(5n+2) .tag { border-left: 2px solid #c084fc; }
+.courseTile:nth-child(5n+3) .tag { border-left: 2px solid #34d399; }
+.courseTile:nth-child(5n+4) .tag { border-left: 2px solid #fbbf24; }
+.courseTile:nth-child(5n+5) .tag { border-left: 2px solid #f87171; }
 
 .courseDescription {
     flex: 1;
     font-family: var(--body-font);
     font-size: 15px;
-    font-weight: 300;
+    font-weight: 400;
     color: var(--muted-text);
     line-height: 1.6;
     margin: 0;
     word-break: break-word;
+    position: relative;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
 }
 
 .courseFooter {
@@ -219,79 +312,137 @@ body {
     gap: var(--spacing-sm);
     justify-content: space-between;
     margin-top: auto;
+    padding-top: var(--spacing-md);
+    position: relative;
 }
 
-/* Buttons */
+.courseFooter::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
+}
+
+/* Enhanced buttons */
 .viewButton {
     flex-shrink: 0;
-    background-color: var(--primary-color);
-    color: var(--white);
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    color: white;
     padding: var(--spacing-sm) var(--spacing-md);
     font-family: var(--accent-font);
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 0.03em;
     border: none;
     border-radius: var(--border-radius-md);
     text-decoration: none;
     text-align: center;
-    transition: background-color 0.2s ease, transform 0.2s ease;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.viewButton::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.7s ease;
+    z-index: -1;
 }
 
 .viewButton:hover {
-    background-color: var(--primary-hover);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(37, 99, 235, 0.3);
+}
+
+.viewButton:hover::before {
+    left: 100%;
 }
 
 .availableButton {
     flex-shrink: 0;
-    background-color: #4caf50; /* Green color for available courses */
-    color: var(--white);
+    background: linear-gradient(90deg, #10b981, #34d399); /* Green gradient */
+    color: white;
     padding: var(--spacing-sm) var(--spacing-md);
     font-family: var(--accent-font);
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 0.03em;
     border: none;
     border-radius: var(--border-radius-md);
     text-decoration: none;
     text-align: center;
-    transition: background-color 0.2s ease, transform 0.2s ease;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
     cursor: pointer;
 }
 
+.availableButton::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.7s ease;
+    z-index: -1;
+}
+
 .availableButton:hover {
-    background-color: #388e3c; /* Darker green on hover */
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(16, 185, 129, 0.3);
+}
+
+.availableButton:hover::before {
+    left: 100%;
 }
 
 .disabledButton {
     flex-shrink: 0;
-    background-color: #9e9e9e; /* Gray color for disabled courses */
-    color: #f5f5f5;
+    background: linear-gradient(90deg, #9ca3af, #d1d5db); /* Gray gradient */
+    color: #f3f4f6;
     padding: var(--spacing-sm) var(--spacing-md);
     font-family: var(--accent-font);
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 0.03em;
     border: none;
     border-radius: var(--border-radius-md);
     text-decoration: none;
     text-align: center;
     cursor: not-allowed;
-    opacity: 0.7;
+    opacity: 0.8;
+    box-shadow: none;
 }
 
-/* Status messages */
+/* Enhanced status messages */
 .noCoursesMessage,
 .loadingMessage {
     text-align: center;
-    padding: var(--spacing-xl);
+    padding: var(--spacing-xxl);
     color: var(--muted-text);
     font-family: var(--accent-font);
     font-style: italic;
-    font-size: 16px;
+    font-size: 18px;
     letter-spacing: 0.01em;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .errorMessage {
@@ -300,6 +451,96 @@ body {
     color: var(--error-color);
     font-family: var(--heading-font);
     font-weight: bold;
-    font-size: 16px;
+    font-size: 18px;
     letter-spacing: 0.01em;
+    background-color: rgba(254, 226, 226, 0.7);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    border-left: 4px solid var(--error-color);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Add a progress indicator for courses */
+.progressContainer {
+    margin-top: var(--spacing-sm);
+    width: 100%;
+    height: 6px;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+}
+
+.progressBar {
+    height: 100%;
+    border-radius: var(--border-radius-sm);
+    transition: width 0.3s ease;
+}
+
+/* Progress bar colors based on course tile */
+.courseTile:nth-child(5n+1) .progressBar { background-color: #60a5fa; }
+.courseTile:nth-child(5n+2) .progressBar { background-color: #c084fc; }
+.courseTile:nth-child(5n+3) .progressBar { background-color: #34d399; }
+.courseTile:nth-child(5n+4) .progressBar { background-color: #fbbf24; }
+.courseTile:nth-child(5n+5) .progressBar { background-color: #f87171; }
+
+/* Add a badge for new or featured courses */
+.courseBadge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 4px 10px;
+    font-family: var(--accent-font);
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    border-radius: var(--border-radius-md);
+    z-index: 2;
+    box-shadow: var(--shadow-md);
+}
+
+.newBadge {
+    background: linear-gradient(90deg, #f59e0b, #f97316);
+}
+
+.featuredBadge {
+    background: linear-gradient(90deg, #8b5cf6, #c084fc);
+}
+
+/* Add animation for loading state */
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+.loadingMessage {
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+/* Media queries for responsive design */
+@media (max-width: 768px) {
+    .courseGrid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: var(--spacing-md);
+    }
+    
+    .sectionHeading {
+        font-size: 28px;
+    }
+    
+    .container {
+        padding: var(--spacing-md);
+    }
+}
+
+@media (max-width: 480px) {
+    .courseGrid {
+        grid-template-columns: 1fr;
+    }
+    
+    .courseTile {
+        height: auto;
+        min-height: 380px;
+    }
 }
